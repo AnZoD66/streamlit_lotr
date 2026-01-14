@@ -48,13 +48,14 @@ if st.session_state.seen_lotr == "Yes":
                 st.warning("Take heed! Please enter book before clicking Add.")
         elif st.session_state.read_books == "No":
             st.write("The wast lore of Middle-Earth is waiting for you! If is thy desire you can explore it.")
-    elif 7 >= days_since_watched < 14:
+    elif 7 <= days_since_watched < 14:
         st.write("You're fresh from Middle-Earth! Aproching the time of rewatching!")
-    elif 14 >= days_since_watched < 30:
+    elif 14 <= days_since_watched < 30:
         st.write("Palantíri have seen that you're aproaching the shadows! Rewatch it as soon as possible!")
-    elif 30 >= days_since_watched < 180:
+    elif 30 <= days_since_watched < 180:
         st.write("The ring won't be carried itself to Mordor! Ordinary people desplay great curage! Watch it to help the free folk of Middle-Earth!")
-    elif days_since_watched <= 180:
+    elif days_since_watched >= 180:
         st.write("The Audacity! Gandalf insists! You should stop what you're doing and rewatch it immediately!")
 elif st.session_state.seen_lotr == "No":
+
     st.subheader("Fool of a Took! Take heed! Your adventure should start immediatly!")               
