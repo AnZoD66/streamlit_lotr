@@ -22,11 +22,11 @@ if st.button("Yes I have seen The Lord of the Rings."):
 
 if st.button("No I haven't seen it."):
     st.session_state.seen_lotr = "No"
-
+min_date = date(2002, 1, 10)
 
 if st.session_state.seen_lotr == "Yes":
     st.subheader("My Friend! You bow to no one! Let us explore the date of your last adventure!")
-    last_watched = st.date_input("Date of the last adventure:", value=date.today())
+    last_watched = st.date_input("Date of the last adventure:", value=date.today(), max_value=date.today(), min_value=min_date)
     formatted_date = last_watched.strftime("%d/%m/%Y")
     st.success(f"Last adventure was: {formatted_date}") 
     days_since_watched = (date.today() - last_watched).days
@@ -59,3 +59,4 @@ if st.session_state.seen_lotr == "Yes":
 elif st.session_state.seen_lotr == "No":
 
     st.subheader("Fool of a Took! Take heed! Your adventure should start immediatly!")               
+
