@@ -22,7 +22,7 @@ if st.button("Yes I have seen The Lord of the Rings."):
 
 if st.button("No I haven't seen it."):
     st.session_state.seen_lotr = "No"
-min_date = date(2002, 1, 10)
+min_date = date(2001, 1, 10)
 
 if st.session_state.seen_lotr == "Yes":
     st.subheader("My Friend! You bow to no one! Let us explore the date of your last adventure!")
@@ -59,4 +59,5 @@ if st.session_state.seen_lotr == "Yes":
 elif st.session_state.seen_lotr == "No":
 
     st.subheader("Fool of a Took! Take heed! Your adventure should start immediatly!")               
+
 
