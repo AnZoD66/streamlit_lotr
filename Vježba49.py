@@ -277,7 +277,7 @@ if st.session_state.quiz_unlocked:
         if st.button("Hint"):
             st.session_state.show_hint = True
         if st.session_state.show_hint == True:
-            st.radio("This creature's life was forever changed after discovering The one Ring and abide in dark places with prolonged lifespan.")
+            st.write("This creature's life was forever changed after discovering The one Ring and abide in dark places with prolonged lifespan.")
         if st.button("Submit Answer"):
             if answer9 == "Hobbit":
                 st.session_state.show_correct = True
@@ -348,3 +348,4 @@ if st.session_state.quiz_unlocked:
             st.session_state.quiz_step = 12
             st.success("Conglatulations! You have compleated the quiz! Your Tolkien knowledge is unparalleled!")
             st.session_state.current_question = None
+
