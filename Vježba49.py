@@ -46,6 +46,16 @@ def add_book_enter():
     if new_book:
         st.session_state.book_list.append(new_book)
 
+def add_book():
+    book_normalized = new_book.strip().lower()
+    matching_books = [b for b in tolkien_books if b.lower() == book_normalized]
+
+def add_book_callback():
+    new_book = st.session_state.new_book.strip()
+    if not new_book:
+        st.warning("Take heed! Please enter new_book before adding.")
+        return
+
 extra_questions = [{"question": "Who forged the Silmarils?", "options": ["Thingol", "Melkor", "Tulkas", "Elrond", "Fëanor"], "answer": "Fëanor", "hint": "He was one of the greatest Elven craftsmen in the First Age."},
     {"question": "What is the tragic fate of Túrin Turambar?", "options": ["He becomes King of Gondor", "He marries Lúthien", "He was turned to stone", "He kills himself", "He becomes a Maia"], "answer": "He kills himself", "hint": "His life is marked by sorrow and doom in the First Age stories."},
     {"question": "What city is hidden and later falls to betrayal in the First Age?", "options": ["Minas Tirith", "Gondolin", "Rivendell", "Osgiliath", "Erebor"], "answer": "Gondolin", "hint": "This secret Elven city is betrayed from within." },
@@ -118,6 +128,12 @@ if "quiz_step" not in st.session_state:
 if "show_hint" not in st.session_state:
     st.session_state.show_hint = False
 
+if "books_entered" not in st.session_state:
+    st.session_state.books_entered = []
+
+
+tolkien_books = ["The Hobbit", "The Fellowship of the Ring", "The Two Towers", "The Return of the King", "The Silmarillion", "Unfinished Tales", "The Children of Húrin", "Beren and Lúthien", "The Fall of Númenor", "The Fall of Gondolin", "The Complete History of Middle-Earth", "The Nature of Middle-Earth"]
+
 if st.session_state.seen_lotr == "Yes":
     st.subheader("My Friend! You bow to no one! Let us explore the date of your last adventure!")
     last_watched = st.date_input("Date of the last adventure:", value=date.today(), max_value=date.today(), min_value=min_date)
@@ -130,18 +146,31 @@ if st.session_state.seen_lotr == "Yes":
         if st.session_state.read_books == "Yes":
             st.write("Mae Govannen hén-o Ilúvatar! What books have you read?")
             new_book = st.text_input("Enter books you have read:", key="new_book")
-            if st.button("Add book!", key="add_book"):
-                    add_book_enter()
-                    st.success(f"Awesome! You've read: {st.session_state.book_list}")
-                    if st.session_state.book_list:
-                        df_books = pd.DataFrame({"Books Read": st.session_state.book_list})
-                        st.subheader("Books you’ve read:")
-                        st.dataframe(df_books, height=200)
-                        if len(st.session_state.book_list) > 3:
-                            st.session_state.quiz_unlocked = True
-                            st.subheader("Conglatulations! You have unlocked the book quiz!")
+            if st.button("Add book"):
+                new_book = st.session_state.new_book.strip()
+                if not new_book:
+                    st.warning("Please enter a book before adding.")
+                else:
+                    matching_books = [b for b in tolkien_books if b.lower() == new_book.lower()]
+                    if matching_books:
+                        book_to_add = matching_books[0]
+                        if book_to_add not in st.session_state.book_list:
+                            st.session_state.book_list.append(book_to_add)
+                            st.success(f"Added '{book_to_add}' to your list!")
+                        else:
+                            st.warning(f"You already entered '{book_to_add}'.")
+                    else:
+                        st.error(f"'{new_book}' is not recognized as a Tolkien book.")
+                        st.session_state.new_book = ""
+                if st.session_state.book_list:
+                    df_books = pd.DataFrame({"Books Read": st.session_state.book_list})
+                    st.subheader("Books you’ve read:")
+                    st.dataframe(df_books, height=200)
+                if len(st.session_state.book_list) > 3:
+                    st.session_state.quiz_unlocked = True
+                    st.subheader("Congratulations! You have unlocked the book quiz!")
             else:
-                st.warning("Take heed! Please enter book before clicking Add.")
+                st.warning("Take heed! Please enter new_book before clicking Add.")
         elif st.session_state.read_books == "No":
             st.write("The wast lore of Middle-Earth is waiting for you! If is thy desire you can explore it.")
     elif 7 <= days_since_watched < 14:
@@ -291,7 +320,7 @@ if st.session_state.quiz_unlocked:
         if st.button("Hint"):
             st.session_state.show_hint = True
         if st.session_state.show_hint == True:
-            st.write("It is compleatly wrong in the movies, in the book it happens in the Return of the King.")
+            st.write("It is compleatly wrong in the movies, in the new_book it happens in the Return of the King.")
         if st.button("Submit Answer"):
             if answer10 == "Shire":
                 st.session_state.show_correct = True
@@ -348,4 +377,3 @@ if st.session_state.quiz_unlocked:
             st.session_state.quiz_step = 12
             st.success("Conglatulations! You have compleated the quiz! Your Tolkien knowledge is unparalleled!")
             st.session_state.current_question = None
-
