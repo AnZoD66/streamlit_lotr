@@ -155,6 +155,22 @@ if st.session_state.quiz_unlocked:
         progress = st.session_state.current_index / total_questions
         st.progress(progress)
         st.write(f"Score: {st.session_state.score}/{total_questions}")
+        if st.session_state.failed:
+            st.error(f"Wrong answer! Final score: {st.session_state.score}/{total_questions}")
+            if st.session_state.score < len(easy_questions):
+                st.write("You have much to learn, young hobbit.")
+            elif st.session_state.score < len(easy_questions) + len(extra_questions)// 2:
+                st.write("You are displaying decent knowlage of Middle-earth!")
+            elif st.session_state.score < len(easy_questions) + len(extra_questions):
+                st.write("A respectable lore-master of Middle-earth!")
+            else:
+                st.write("You stand among the wisest of the Eldar.")
+            if st.button("Restart Quiz"):
+                for key in ["quiz_started", "score", "current_index", "quiz_pool", "failed"]:
+                    if key in st.session_state:
+                        del st.session_state[key]
+                st.rerun()
+            st.stop()
         i = st.session_state.current_index
         if i < len(easy_questions):
             st.info("Easy Questions — A gentle beginning in the Shire...")
@@ -181,20 +197,7 @@ if st.session_state.quiz_unlocked:
                 st.rerun()
             else:
                 st.session_state.failed = True
+                st.rerun()
         if st.session_state.show_correct_message:
             st.success("Correct!")
             st.session_state.show_correct_message = False
-        if st.session_state.failed:
-            st.error(f"Wrong answer! Final score: {st.session_state.score}/{total_questions}")
-            if st.session_state.score < len(easy_questions):
-                st.write("You have much to learn, young hobbit.")
-            elif st.session_state.score < len(easy_questions) + len(extra_questions):
-                st.write("A respectable lore-master of Middle-earth!")
-            else:
-                st.write("You stand among the wisest of the Eldar.")
-            if st.button("Restart Quiz"):
-                for key in ["quiz_started", "score", "current_index", "quiz_pool", "failed"]:
-                    if key in st.session_state:
-                        del st.session_state[key]
-                st.rerun()
-            st.stop()
