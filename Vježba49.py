@@ -84,14 +84,12 @@ if st.session_state.seen_lotr == "Yes":
         st.radio("Have you read any LOTR books?",("Yes", "No"), key="read_books")
         if st.session_state.read_books == "Yes":
             st.write("Greetings the child of Ilúvatar! What books have you read?")
-
             def search_tolkien_books(query: str):
                 if not query:
                     return []
                 available = [b for b in tolkien_books if b not in st.session_state.book_list]
                 results = process.extract(query, available, scorer=fuzz.token_sort_ratio, limit=5)
                 return [r[0] for r in results if r[1] >= 40]
-
             def handle_book_submit(book_name=None):
                 if not book_name:
                     st.session_state.success_message = "Please select a book from the suggestions."
@@ -101,7 +99,6 @@ if st.session_state.seen_lotr == "Yes":
                     st.session_state.success_message = f"Added '{book_name}' to your list!"
                 else:
                     st.session_state.success_message = f"You already entered '{book_name}'."
-
             selected_book = st_searchbox(
                 search_tolkien_books,
                 label="Type a book name:",
@@ -110,22 +107,17 @@ if st.session_state.seen_lotr == "Yes":
             if selected_book and selected_book != st.session_state.get("last_added_book"):
                 handle_book_submit(book_name=selected_book)
                 st.session_state.last_added_book = selected_book
-
             if st.button("Add book"):
                 handle_book_submit(book_name=selected_book)
-
             if "success_message" in st.session_state and st.session_state.success_message:
                 st.info(st.session_state.success_message)
-
             if st.session_state.book_list:
                 df_books = pd.DataFrame({"Books Read": st.session_state.book_list})
                 st.subheader("Books you've read:")
                 st.dataframe(df_books, height=200)
-
             if len(st.session_state.book_list) > 3:
                 st.session_state.quiz_unlocked = True
                 st.subheader("Congratulations! You have unlocked the book quiz!")
-
         elif st.session_state.read_books == "No":
             st.write("The vast lore of Middle-Earth is waiting for you! If is thy desire you can explore it.")
     elif 7 <= days_since_watched < 14:
@@ -146,20 +138,16 @@ if st.session_state.quiz_unlocked:
         st.session_state.current_index = 0
         st.session_state.quiz_pool = []
         st.session_state.failed = False
-
     total_questions = len(easy_questions) + len(extra_questions) + len(advanced_questions)
-
     if not st.session_state.quiz_started:
         st.subheader("The Adventure of Middle-earth awaits...")
         if st.button("Start Quiz"):
             easy = easy_questions.copy()
             extra = extra_questions.copy()
             advanced = advanced_questions.copy()
-
             random.shuffle(easy)
             random.shuffle(extra)
             random.shuffle(advanced)
-
             st.session_state.quiz_pool = easy + extra + advanced
             st.session_state.quiz_started = True
             st.rerun()
@@ -167,31 +155,24 @@ if st.session_state.quiz_unlocked:
         progress = st.session_state.current_index / total_questions
         st.progress(progress)
         st.write(f"Score: {st.session_state.score}/{total_questions}")
-
         i = st.session_state.current_index
-
         if i < len(easy_questions):
             st.info("Easy Questions — A gentle beginning in the Shire...")
         elif i < len(easy_questions) + len(extra_questions):
             st.info("Extra Questions — The road goes ever on...")
         else:
             st.info("Advanced Questions — The final test of lore mastery...")
-
         if st.session_state.current_index >= total_questions:
             st.success("Perfect score! You are a true master of Tolkien lore!")
             st.balloons()
             st.stop()
-
         q = st.session_state.quiz_pool[st.session_state.current_index]
-
         answer = st.radio(
             q["question"],
             q["options"],
             key=f"question_{st.session_state.current_index}")
-
         if st.button("Hint", key=f"hint_{st.session_state.current_index}"):
             st.write(q["hint"])
-
         if st.button("Submit", key=f"submit_{st.session_state.current_index}"):
             if answer == q["answer"]:
                 st.session_state.score += 1
@@ -200,25 +181,20 @@ if st.session_state.quiz_unlocked:
                 st.rerun()
             else:
                 st.session_state.failed = True
-
         if st.session_state.show_correct_message:
             st.success("Correct!")
             st.session_state.show_correct_message = False
-
         if st.session_state.failed:
             st.error(f"Wrong answer! Final score: {st.session_state.score}/{total_questions}")
-
             if st.session_state.score < len(easy_questions):
                 st.write("You have much to learn, young hobbit.")
             elif st.session_state.score < len(easy_questions) + len(extra_questions):
                 st.write("A respectable lore-master of Middle-earth!")
             else:
                 st.write("You stand among the wisest of the Eldar.")
-
             if st.button("Restart Quiz"):
                 for key in ["quiz_started", "score", "current_index", "quiz_pool", "failed"]:
                     if key in st.session_state:
                         del st.session_state[key]
                 st.rerun()
-
             st.stop()
