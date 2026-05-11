@@ -7,6 +7,17 @@ from lotr_library.books import tolkien_books
 from rapidfuzz import fuzz, process
 from streamlit_searchbox import st_searchbox
 
+st.markdown("""
+<style>
+/* Radio question text */
+div[role="radiogroup"] label {
+    font-size: 22px !important;
+    font-weight: bold !important;}           
+/* Widget labels */
+label[data-testid="stWidgetLabel"] p {
+    font-size: 22px !important;
+    font-weight: bold !important;}</style>""", unsafe_allow_html=True)
+
 st.title("The Lord of the Rings Watch Reminder")
 
 st.subheader("Hey! Come merry dol! Hey! Come derry dol! Hop along, my hearties! Hobbits! Ponies, all! We are fond of parties. Now let the fun begin! Let us sing together!")
